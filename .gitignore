@@ -1,0 +1,5 @@
+*.pkl
+*.pyc
+*.gif
+/test_figs/*
+/animations/*
