@@ -49,7 +49,7 @@ def potential(x, d, dx, lam_i, lam_j, pi, pj, qi, qj):
 
 
 # Make the simulation runner object:
-sim = Polar(device="cpu", init_k=50)
+sim = Polar(device="cuda", init_k=50)
 runner = sim.simulation(x, p, q, lam, beta, eta=eta, yield_every=yield_every, potential=potential)
 
 # Running the simulation
