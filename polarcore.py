@@ -41,7 +41,7 @@ class Polar:
         self.callback = callback
 
     @staticmethod
-    def find_potential_neighbours(x, k=100, distance_upper_bound=np.inf, workers = -1):
+    def find_potential_neighbours(x, k=100, distance_upper_bound=np.inf, workers=-1):
         """
         Uses cKDTree to compute potential nearest-neighbors of each cell
 
@@ -64,7 +64,7 @@ class Polar:
             index of each cell's potential neighbors
         """
         tree = cKDTree(x)
-        d, idx = tree.query(x, k + 1, distance_upper_bound=distance_upper_bound, n_jobs=workers)
+        d, idx = tree.query(x, k + 1, distance_upper_bound=distance_upper_bound, workers=workers)
         return d[:, 1:], idx[:, 1:]
 
     def find_true_neighbours(self, d, dx):

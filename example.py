@@ -10,22 +10,20 @@ import torch
 save_name = 'test1'
 
 # Initialize a random system
-n = 500
+n = 2500
 x, p, q = init_random_system(n)
-
 x *= 3
-beta = 0*0.1 + np.zeros(len(x))  # cell division rate
-lam = np.array([1.0, 0.0, 0.0, 0.0])
-eta = 1e-5  # noise
 
-# Make one cell polar and divide it faster
-index = np.argmin(np.sum(x**2, axis=1))
+# Parameters
+beta = np.zeros(len(x))  # cell division rate
+lam = np.array([0.0, 1.0, 0.0, 0.0])
+eta = 0.0  # noise
+
+# Allow per-cell polarity parameters
 lam = np.repeat(lam[None, :], len(x), axis=0)
-lam[index, :] = (0, 1, 0, 0)
-beta[index] = 0.0025
 
 # Simulation parameters
-timesteps = 15000
+timesteps = 100
 yield_every = 50  # save simulation state every x time steps
 
 
@@ -35,13 +33,7 @@ def potential(x, d, dx, lam_i, lam_j, pi, pj, qi, qj):
     S2 = torch.sum(torch.cross(pi, qi, dim=2) * torch.cross(pj, qj, dim=2), dim=2)
     S3 = torch.sum(torch.cross(qi, dx, dim=2) * torch.cross(qj, dx, dim=2), dim=2)
 
-    lam1 = 0.5 * (lam_i + lam_j)
-    lam2 = lam1.clone()
-    lam2[:, : 0] = 1
-    lam2[:, :, 1:] = 0
-    mask1 = 1 * (lam1[:, :, 0] > 0.5)
-
-    lam = lam1 * (1 - mask1[:, :, None]) + lam2 * mask1[:, :, None]
+    lam = 0.5 * (lam_i + lam_j)
 
     S = lam[:, :, 0] + lam[:, :, 1] * S1 + lam[:, :, 2] * S2 + lam[:, :, 3] * S3
     Vij = torch.exp(-d) - S * torch.exp(-d / 5)
@@ -63,9 +55,9 @@ for xx, pp, qq, lam in itertools.islice(runner, timesteps):
     print(f'Running {i} of {timesteps}   ({yield_every * i} of {yield_every * timesteps})   ({len(xx)} cells)')
     data.append((xx, pp, qq, lam))
 
-    if len(xx) > 1000:
-        print('Stopping')
-        break
+    # if len(xx) > 1000:
+    #     print('Stopping')
+    #     break
 
 try:
     os.mkdir('data')

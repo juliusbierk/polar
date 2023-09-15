@@ -3,7 +3,7 @@ from mayavi import mlab
 # mlab.options.backend = 'envisage'
 import pickle
 
-fname = 'data/test2.pkl'
+fname = 'data/test1.pkl'
 
 with open(fname, 'rb') as f:
     data = pickle.load(f)  # contains x, p, q, lam
@@ -14,7 +14,7 @@ plot = mlab.points3d(data[t][0][:, 0], data[t][0][:, 1], data[t][0][:, 2], data[
     scale_mode='none', resolution=8)
 
 
-@mlab.animate(delay=10)
+@mlab.animate(delay=100)
 def anim():
     for t in range(0, len(data), 5):
         # mlab.view(azimuth=-90 + t / 10., distance=390, elevation=10 + t / len(x))
