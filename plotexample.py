@@ -26,7 +26,7 @@ def anim():
         # colors[0] = 1
 
         print(t, '/', len(data), f'  (n = {len(data[t][0])})')
-        mask = data[t][0][:, 1] > 0
+        mask = data[t][0][:, 1] > -10000 # 0
         plot.mlab_source.reset(x=data[t][0][mask, 0],
                                y=data[t][0][mask, 1],
                                z=data[t][0][mask, 2],
